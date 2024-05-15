@@ -1,4 +1,5 @@
 import connection from "../connection.mjs";
+import crypto from "crypto"
 export const getAllUser = async(req, res) => {
     connection.query('SELECT * FROM user', function(err, results){
         if(err) {
@@ -61,8 +62,8 @@ export const addNewUser = async (req, res) => {
     //     });
     // }
 
-    const {role_id, username, password, email, phone_number, avatar, url_info} = req.body;
-    connection.query('INSERT INTO user (role_id, username, password, email, phone_number, avatar, url_info) VALUES (?,?,?,?,?,?,?)', [1, username, "Null pass", "Null email", phone_number, "Null avatar", url_info], function(err, results){
+    const {username,  phone_number, url_info} = req.body;
+    connection.query('INSERT INTO user (role_id, username, password, email, phone_number, avatar, url_info) VALUES (?,?,?,?,?,?,?)', [ username, , phone_number, url_info], function(err, results){
         if (err) {
             return res.status(500).json({
                 result:false,
@@ -76,4 +77,33 @@ export const addNewUser = async (req, res) => {
             message:'Successfully'
         });
     })
+}
+
+export const zalo_notify = async(req, res) => {
+    const {appId, orderId, method} = req.body.data;
+    const mac = req.body.mac;
+    // const appId = '12345'; // example appId
+    // const orderId = '67890'; // example orderId
+    // const method = 'POST'; // example method
+    const privateKey = '03f35523af3118c58cde5daf5e186920'; // your private key
+
+    const data = `appId=${appId}&orderId=${orderId}&method=${method}`;
+
+    const hmac = crypto.createHmac('sha256', privateKey);
+    hmac.update(data);
+    const reqmac = hmac.digest('hex');
+
+    if (reqmac === mac) {
+    console.log('Request hợp lệ'); // Valid request
+    res.status(200).json({
+        returnCode: 1,
+        returnMessage: 'Success'
+    })
+    } else {
+    console.log('Request không hợp lệ'); // Invalid request
+    res.status(400).json({
+        returnCode: -1,
+        returnMessage: 'Fail'
+    })
+    }
 }
