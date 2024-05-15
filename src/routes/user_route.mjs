@@ -1,7 +1,7 @@
 import express from 'express';
 const userRouter = express.Router();
 import { resolveId } from '../middlewares/index.mjs';
-import { addNewUser, getAllUser, getUserById } from '../controller/user_controller.mjs';
+import { addNewUser, getAllUser, getUserById, zalo_notify } from '../controller/user_controller.mjs';
 
 userRouter.get("/api/user", getAllUser);
 userRouter.get("/api/user/:user_id",resolveId('user_id'), getUserById);
