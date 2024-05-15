@@ -61,7 +61,7 @@ export const addNewUser = async (req, res) => {
     //     });
     // }
 
-    const {role_id, username, password, email, phone_number, address, avatar, firstname, lastname} = req.body;
+    const {role_id, username, password, email, phone_number, avatar, url_info} = req.body;
     connection.query('INSERT INTO user (role_id, username, password, email, phone_number, avatar, url_info) VALUES (?,?,?,?,?,?,?)', [1, username, "Null pass", "Null email", phone_number, "Null avatar", url_info], function(err, results){
         if (err) {
             return res.status(500).json({
